@@ -1,0 +1,278 @@
+POST https://localhost:5001/api/players/auth
+Content-Type: application/json
+
+{
+  "name": "playesdr1",
+  "password": "dfs"
+}
+
+<> 2021-01-14T191859.404.json
+
+###
+
+POST https://localhost:5001/api/players/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "dfs"
+}
+
+<> 2021-01-14T191848.401.json
+
+###
+
+POST https://localhost:5001/api/players/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+<> 2021-01-14T191838.200.json
+
+###
+
+POST http://localhost:5001/api/players/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+###
+
+POST https://localhost:5001/api/players/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "wrong password"
+}
+
+<> 2021-01-14T191706.401.json
+
+###
+
+POST https://localhost:5001/api/players/player1/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+###
+
+POST https://localhost:5001/api/players
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+###
+
+POST https://localhost:5001/api/players/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "wrong password"
+}
+
+<> 2021-01-14T191520.500.txt
+
+###
+
+POST https://localhost:5001/api/players/player1/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+###
+
+POST https://localhost:5001/api/players
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+<> 2021-01-14T191519.500.txt
+
+###
+
+POST https://localhost:5001/api/players/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "wrong password"
+}
+
+<> 2021-01-14T191404.500.txt
+
+###
+
+POST https://localhost:5001/api/players/player1/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+###
+
+POST https://localhost:5001/api/players
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+<> 2021-01-14T191403.500.txt
+
+###
+
+POST https://localhost:5001/api/players/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "wrong password"
+}
+
+<> 2021-01-14T191259.500.txt
+
+###
+
+POST https://localhost:5001/api/players/player1/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+###
+
+POST https://localhost:5001/api/players
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+<> 2021-01-14T191258.500.txt
+
+###
+
+POST https://localhost:5001/api/players/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "wrong password"
+}
+
+<> 2021-01-14T191053.500.txt
+
+###
+
+POST https://localhost:5001/api/players/player1/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+###
+
+POST https://localhost:5001/api/players
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+<> 2021-01-14T191052.500.txt
+
+###
+
+POST https://localhost:5001/api/players/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "wrong password"
+}
+
+<> 2021-01-14T190622.500.txt
+
+###
+
+POST https://localhost:5001/api/players/player1/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+###
+
+POST https://localhost:5001/api/players
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+<> 2021-01-14T190619.500.txt
+
+###
+
+POST http://api/players/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "wrong password"
+}
+
+###
+
+POST http://api/players/player1/auth
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+###
+
+POST http://api/players
+Content-Type: application/json
+
+{
+  "name": "player1",
+  "password": "password1"
+}
+
+###
+
