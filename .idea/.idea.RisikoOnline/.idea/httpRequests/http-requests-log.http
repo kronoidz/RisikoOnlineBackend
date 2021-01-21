@@ -1,3 +1,268 @@
+GET https://localhost:5001/api/invitations/incoming
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJydW5vIiwibmJmIjoxNjExMjQ2MzY3LCJleHAiOjE2MTE4NTExNjcsImlhdCI6MTYxMTI0NjM2N30.wD_xAQ9e8c-6t3u_8ZR84_a_OPQNjv2_-kc9T5ahMxk
+
+<> 2021-01-21T180316.200.json
+
+###
+
+GET https://localhost:5001/api/invitations/incoming/3/accept
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJydW5vIiwibmJmIjoxNjExMjQ2MzY3LCJleHAiOjE2MTE4NTExNjcsImlhdCI6MTYxMTI0NjM2N30.wD_xAQ9e8c-6t3u_8ZR84_a_OPQNjv2_-kc9T5ahMxk
+
+###
+
+GET https://localhost:5001/api/invitations/incoming
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJydW5vIiwibmJmIjoxNjExMjQ2MzY3LCJleHAiOjE2MTE4NTExNjcsImlhdCI6MTYxMTI0NjM2N30.wD_xAQ9e8c-6t3u_8ZR84_a_OPQNjv2_-kc9T5ahMxk
+
+<> 2021-01-21T175125.200.json
+
+###
+
+GET https://localhost:5001/api/invitations/outgoing
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imtyb25vaWR6IiwibmJmIjoxNjExMjQ0MjkzLCJleHAiOjE2MTE4NDkwOTMsImlhdCI6MTYxMTI0NDI5M30.58SbxDLUkn-elI2FBDVVOyxq76aVHLREIaOJ-xQ6CAc
+
+<> 2021-01-21T175119.200.json
+
+###
+
+GET https://localhost:5001/api/invitations/outgoing
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imtyb25vaWR6IiwibmJmIjoxNjExMjQ0MjkzLCJleHAiOjE2MTE4NDkwOTMsImlhdCI6MTYxMTI0NDI5M30.58SbxDLUkn-elI2FBDVVOyxq76aVHLREIaOJ-xQ6CAc
+
+<> 2021-01-21T175110.200.json
+
+###
+
+POST https://localhost:5001/api/invitations/outgoing
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imtyb25vaWR6IiwibmJmIjoxNjExMjQ0MjkzLCJleHAiOjE2MTE4NDkwOTMsImlhdCI6MTYxMTI0NDI5M30.58SbxDLUkn-elI2FBDVVOyxq76aVHLREIaOJ-xQ6CAc
+Content-Type: application/json
+
+{
+  "receiver": "bruno"
+}
+
+<> 2021-01-21T175102.200.json
+
+###
+
+POST https://localhost:5001/api/invitations/outgoing
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imtyb25vaWR6IiwibmJmIjoxNjExMjQ0MjkzLCJleHAiOjE2MTE4NDkwOTMsImlhdCI6MTYxMTI0NDI5M30.58SbxDLUkn-elI2FBDVVOyxq76aVHLREIaOJ-xQ6CAc
+Content-Type: application/json
+
+{
+  "receiver": "bruno"
+}
+
+<> 2021-01-21T174814.200.json
+
+###
+
+POST https://localhost:5001/api/invitations/outgoing
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imtyb25vaWR6IiwibmJmIjoxNjExMjQ0MjkzLCJleHAiOjE2MTE4NDkwOTMsImlhdCI6MTYxMTI0NDI5M30.58SbxDLUkn-elI2FBDVVOyxq76aVHLREIaOJ-xQ6CAc
+Content-Type: application/json
+
+{
+  "receiver": "bruno"
+}
+
+<> 2021-01-21T174248.200.json
+
+###
+
+POST https://localhost:5001/api/players/auth
+Content-Type: application/json
+
+{
+  "name": "bruno",
+  "password": "bruno"
+}
+
+<> 2021-01-21T174202.200.json
+
+###
+
+POST https://localhost:5001/api/players
+Content-Type: application/json
+
+{
+  "name": "bruno",
+  "password": "bruno"
+}
+
+###
+
+POST https://localhost:5001/api/players/auth
+Content-Type: application/json
+
+{
+  "name": "kronoidz",
+  "password": "kronoidz"
+}
+
+<> 2021-01-21T174201.200.json
+
+###
+
+POST https://localhost:5001/api/players
+Content-Type: application/json
+
+{
+  "name": "kronoidz",
+  "password": "kronoidz"
+}
+
+<> 2021-01-21T174201.409.json
+
+###
+
+POST https://localhost:5001/api/players
+Content-Type: application/json
+
+{
+  "name": "kronoidz",
+  "password": "kronoidz"
+}
+
+###
+
+GET https://localhost:5001/api/invitations/outgoing
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imtyb25vaWR6IiwibmJmIjoxNjExMjQ0MjkzLCJleHAiOjE2MTE4NDkwOTMsImlhdCI6MTYxMTI0NDI5M30.58SbxDLUkn-elI2FBDVVOyxq76aVHLREIaOJ-xQ6CAc
+
+<> 2021-01-21T173441.500.txt
+
+###
+
+GET https://localhost:5001/api/invitations/incoming
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJydW5vIiwibmJmIjoxNjExMjQ2MzY3LCJleHAiOjE2MTE4NTExNjcsImlhdCI6MTYxMTI0NjM2N30.wD_xAQ9e8c-6t3u_8ZR84_a_OPQNjv2_-kc9T5ahMxk
+
+<> 2021-01-21T173412.200.json
+
+###
+
+POST https://localhost:5001/api/invitations/outgoing
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imtyb25vaWR6IiwibmJmIjoxNjExMjQ0MjkzLCJleHAiOjE2MTE4NDkwOTMsImlhdCI6MTYxMTI0NDI5M30.58SbxDLUkn-elI2FBDVVOyxq76aVHLREIaOJ-xQ6CAc
+Content-Type: application/json
+
+{
+  "receiver": "bruno"
+}
+
+<> 2021-01-21T173406.409.json
+
+###
+
+GET https://localhost:5001/api/invitations/incoming
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJydW5vIiwibmJmIjoxNjExMjQ2MzY3LCJleHAiOjE2MTE4NTExNjcsImlhdCI6MTYxMTI0NjM2N30.wD_xAQ9e8c-6t3u_8ZR84_a_OPQNjv2_-kc9T5ahMxk
+
+<> 2021-01-21T173305.200.json
+
+###
+
+GET https://localhost:5001/api/invitations/incoming
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJydW5vIiwibmJmIjoxNjExMjQ2MzY3LCJleHAiOjE2MTE4NTExNjcsImlhdCI6MTYxMTI0NjM2N30.wD_xAQ9e8c-6t3u_8ZR84_a_OPQNjv2_-kc9T5ahMxk
+
+<> 2021-01-21T173137.200.json
+
+###
+
+GET https://localhost:5001/api/invitations/incoming
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJydW5vIiwibmJmIjoxNjExMjQ2MzY3LCJleHAiOjE2MTE4NTExNjcsImlhdCI6MTYxMTI0NjM2N30.wD_xAQ9e8c-6t3u_8ZR84_a_OPQNjv2_-kc9T5ahMxk
+
+<> 2021-01-21T172944.200.json
+
+###
+
+GET https://localhost:5001/api/invitations/incoming
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJydW5vIiwibmJmIjoxNjExMjQ2MzY3LCJleHAiOjE2MTE4NTExNjcsImlhdCI6MTYxMTI0NjM2N30.wD_xAQ9e8c-6t3u_8ZR84_a_OPQNjv2_-kc9T5ahMxk
+
+<> 2021-01-21T172910.200.json
+
+###
+
+POST https://localhost:5001/api/invitations/outgoing
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imtyb25vaWR6IiwibmJmIjoxNjExMjQ0MjkzLCJleHAiOjE2MTE4NDkwOTMsImlhdCI6MTYxMTI0NDI5M30.58SbxDLUkn-elI2FBDVVOyxq76aVHLREIaOJ-xQ6CAc
+Content-Type: application/json
+
+{
+  "receiver": "bruno"
+}
+
+<> 2021-01-21T172901.200.json
+
+###
+
+GET https://localhost:5001/api/invitations/incoming
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJydW5vIiwibmJmIjoxNjExMjQ2MzY3LCJleHAiOjE2MTE4NTExNjcsImlhdCI6MTYxMTI0NjM2N30.wD_xAQ9e8c-6t3u_8ZR84_a_OPQNjv2_-kc9T5ahMxk
+
+<> 2021-01-21T172721.200.json
+
+###
+
+POST https://localhost:5001/api/invitations/outgoing
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imtyb25vaWR6IiwibmJmIjoxNjExMjQ0MjkzLCJleHAiOjE2MTE4NDkwOTMsImlhdCI6MTYxMTI0NDI5M30.58SbxDLUkn-elI2FBDVVOyxq76aVHLREIaOJ-xQ6CAc
+Content-Type: application/json
+
+{
+  "receiver": "bruno"
+}
+
+<> 2021-01-21T172721.500.txt
+
+###
+
+POST https://localhost:5001/api/players/auth
+Content-Type: application/json
+
+{
+  "name": "bruno",
+  "password": "bruno"
+}
+
+<> 2021-01-21T172608.200.json
+
+###
+
+POST https://localhost:5001/api/players
+Content-Type: application/json
+
+{
+  "name": "bruno",
+  "password": "bruno"
+}
+
+###
+
+GET https://localhost:5001/api/invitations/incoming
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imtyb25vaWR6IiwibmJmIjoxNjExMjQ0MjkzLCJleHAiOjE2MTE4NDkwOTMsImlhdCI6MTYxMTI0NDI5M30.58SbxDLUkn-elI2FBDVVOyxq76aVHLREIaOJ-xQ6CAc
+
+<> 2021-01-21T165405.200.json
+
+###
+
+GET https://localhost:5001/api/invitations/incoming
+
+###
+
+POST https://localhost:5001/api/players/auth
+Content-Type: application/json
+
+{
+  "name": "kronoidz",
+  "password": "kronoidz"
+}
+
+<> 2021-01-21T165133.200.json
+
+###
+
+POST https://localhost:5001/api/players
+Content-Type: application/json
+
+{
+  "name": "kronoidz",
+  "password": "kronoidz"
+}
+
+###
+
 POST https://localhost:5001/api/players/auth
 Content-Type: application/json
 
@@ -225,48 +490,6 @@ Content-Type: application/json
 ###
 
 POST https://localhost:5001/api/players/player1/auth
-Content-Type: application/json
-
-{
-  "name": "player1",
-  "password": "password1"
-}
-
-###
-
-POST https://localhost:5001/api/players
-Content-Type: application/json
-
-{
-  "name": "player1",
-  "password": "password1"
-}
-
-<> 2021-01-14T190619.500.txt
-
-###
-
-POST http://api/players/auth
-Content-Type: application/json
-
-{
-  "name": "player1",
-  "password": "wrong password"
-}
-
-###
-
-POST http://api/players/player1/auth
-Content-Type: application/json
-
-{
-  "name": "player1",
-  "password": "password1"
-}
-
-###
-
-POST http://api/players
 Content-Type: application/json
 
 {

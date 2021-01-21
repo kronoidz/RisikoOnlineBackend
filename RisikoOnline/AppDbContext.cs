@@ -16,7 +16,7 @@ namespace RisikoOnline
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            Player.Configure(modelBuilder);
+            
         }
     }
 }

@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RisikoOnline;
 
 namespace RisikoOnline.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210121154357_m3")]
+    partial class m3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,9 +28,11 @@ namespace RisikoOnline.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ReceiverName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SenderName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -62,11 +66,15 @@ namespace RisikoOnline.Migrations
                 {
                     b.HasOne("RisikoOnline.Entities.Player", "Receiver")
                         .WithMany("IncomingInvitations")
-                        .HasForeignKey("ReceiverName");
+                        .HasForeignKey("ReceiverName")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("RisikoOnline.Entities.Player", "Sender")
                         .WithMany("OutgoingInvitations")
-                        .HasForeignKey("SenderName");
+                        .HasForeignKey("SenderName")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Receiver");
 

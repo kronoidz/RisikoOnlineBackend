@@ -1,5 +1,6 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RisikoOnline.Entities
 {
@@ -9,9 +10,10 @@ namespace RisikoOnline.Entities
         [Required] public string PasswordHash { get; set; }
         [Required] public string PasswordSalt { get; set; }
 
-        public static void Configure(ModelBuilder builder)
-        {
-            builder.Entity<Player>();
-        }
+        [InverseProperty("Sender")]
+        public List<Invitation> OutgoingInvitations { get; set; }
+        
+        [InverseProperty("Receiver")]
+        public List<Invitation> IncomingInvitations { get; set; }
     }
 }
