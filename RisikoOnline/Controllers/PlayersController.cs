@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using RisikoOnline.Entities;
+using RisikoOnline.Data;
 using RisikoOnline.Services;
 
 namespace RisikoOnline.Controllers

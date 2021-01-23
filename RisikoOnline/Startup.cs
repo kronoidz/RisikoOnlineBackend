@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RisikoOnline.Data;
 using RisikoOnline.Services;
 
 namespace RisikoOnline
@@ -35,8 +36,12 @@ namespace RisikoOnline
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "RisikoOnline", Version = "v1"});
             });
+            
             services.AddDbContext<AppDbContext>();
+            
             services.AddSingleton<ConfigurationService>();
+            services.AddSingleton<RandomService>();
+            services.AddScoped<MatchService>();
             
             // JWT authentication
             string secret = _configuration["TokenSigningSecret"];

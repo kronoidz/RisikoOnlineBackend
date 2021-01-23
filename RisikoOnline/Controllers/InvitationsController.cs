@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RisikoOnline.Entities;
+using RisikoOnline.Data;
 
 namespace RisikoOnline.Controllers
 {
@@ -65,10 +65,14 @@ namespace RisikoOnline.Controllers
                 .FirstOrDefaultAsync();
 
             if (invitation == null) return NotFound();
+            if (invitation.Accepted == false) return UnprocessableEntity("Invitation already declined");
 
-            invitation.Accepted = true;
+            if (invitation.Accepted == null)
+            {
+                invitation.Accepted = true;
+                await _dbContext.SaveChangesAsync();
+            }
             
-            await _dbContext.SaveChangesAsync();
             return Ok();
         }
         
@@ -83,10 +87,14 @@ namespace RisikoOnline.Controllers
                 .FirstOrDefaultAsync();
 
             if (invitation == null) return NotFound();
+            if (invitation.Accepted == true) return UnprocessableEntity("Invitation already accepted");
 
-            invitation.Accepted = false;
+            if (invitation.Accepted == null)
+            {
+                invitation.Accepted = false;
+                await _dbContext.SaveChangesAsync();
+            }
             
-            await _dbContext.SaveChangesAsync();
             return Ok();
         }
 
@@ -109,14 +117,14 @@ namespace RisikoOnline.Controllers
                 return UnprocessableEntity("You can't send an invitation to yourself");
             
             Player receiver = await _dbContext.Players
-                .Where(p => p.Name == User.Identity.Name)
+                .Where(p => p.Name == request.Receiver)
                 .Include(p => p.IncomingInvitations)
                 .FirstOrDefaultAsync();
             
             if (receiver == null) return NotFound();
             
             if (!receiver.IncomingInvitations.TrueForAll(
-                i => i.SenderName != User.Identity?.Name || i.Accepted.HasValue))
+                i => i.SenderName != User.Identity?.Name || i.Accepted == false))
                 return Conflict();
 
             var invitation = new Invitation
