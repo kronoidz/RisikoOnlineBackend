@@ -1,3 +1,22 @@
+POST https://localhost:5001/api/players/auth
+Content-Type: application/json
+
+{
+  "name": "admin",
+  "password": "adin"
+}
+
+<> 2021-01-26T122859.401.json
+
+###
+
+POST https://localhost:5001/api/match
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwibmJmIjoxNjExNDExOTY2LCJleHAiOjE2MTIwMTY3NjYsImlhdCI6MTYxMTQxMTk2Nn0.UnyjTLs9nINNi8Bea6GqRs30wYDYJyUaP-jm2FSBG3c
+
+<> 2021-01-26T122826.422.json
+
+###
+
 POST https://localhost:5001/api/match
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwibmJmIjoxNjExNDExOTY2LCJleHAiOjE2MTIwMTY3NjYsImlhdCI6MTYxMTQxMTk2Nn0.UnyjTLs9nINNi8Bea6GqRs30wYDYJyUaP-jm2FSBG3c
 
@@ -420,28 +439,6 @@ Content-Type: application/json
 }
 
 <> 2021-01-23T151541.200.json
-
-###
-
-POST https://localhost:5001/api/players/auth
-Content-Type: application/json
-
-{
-  "name": "bruno",
-  "password": "bruno"
-}
-
-<> 2021-01-23T151457.200.json
-
-###
-
-POST https://localhost:5001/api/players
-Content-Type: application/json
-
-{
-  "name": "bruno",
-  "password": "bruno"
-}
 
 ###
 

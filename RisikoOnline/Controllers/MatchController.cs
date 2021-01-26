@@ -44,7 +44,7 @@ namespace RisikoOnline.Controllers
 
             if (invitations.Count + 1 < MatchService.MinPlayers)
             {
-                return UnprocessableEntity("Not enough accepted invitations to create a match");
+                return UnprocessableEntity(new ApiError(ApiErrorType.NotEnoughInvitations));
             }
 
             var me = await meTask;

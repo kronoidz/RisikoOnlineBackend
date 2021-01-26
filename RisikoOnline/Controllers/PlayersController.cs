@@ -54,10 +54,10 @@ namespace RisikoOnline.Controllers
         public async Task<ActionResult> PostPlayer([FromBody] PlayerPostRequest request)
         {
             if (await _dbContext.Players.FindAsync(request.Name) != null)
-                return Conflict();
+                return Conflict(new ApiError(ApiErrorType.PlayerNameConflict));
             
             if (!NameRegex.IsMatch(request.Name) || !PasswordRegex.IsMatch(request.Password))
-                return UnprocessableEntity();
+                return BadRequest(new ApiError(ApiErrorType.InvalidCredentials));
 
             string salt = Guid.NewGuid().ToString();
             var newPlayer = new Player
@@ -78,11 +78,11 @@ namespace RisikoOnline.Controllers
         {
             Player player = await _dbContext.Players.FindAsync(request.Name);
             if (player == null)
-                return Unauthorized();
+                return Unauthorized(new ApiError(ApiErrorType.InvalidCredentials));
 
             string hash = GetPasswordHash(request.Password, player.PasswordSalt);
             if (player.PasswordHash != hash)
-                return Unauthorized();
+                return Unauthorized(new ApiError(ApiErrorType.InvalidCredentials));
             
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.TokenSigningSecret));

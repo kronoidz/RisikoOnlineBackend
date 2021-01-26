@@ -64,15 +64,15 @@ namespace RisikoOnline.Controllers
                 .Where(i => i.Id == id)
                 .FirstOrDefaultAsync();
 
-            if (invitation == null) return NotFound();
-            if (invitation.Accepted == false) return UnprocessableEntity("Invitation already declined");
-
-            if (invitation.Accepted == null)
-            {
-                invitation.Accepted = true;
-                await _dbContext.SaveChangesAsync();
-            }
+            if (invitation == null)
+                return NotFound(new ApiError(ApiErrorType.EntityNotFound));
             
+            if (invitation.Accepted.HasValue)
+                return UnprocessableEntity(new ApiError(ApiErrorType.InvitationAlreadyAnswered));
+
+            invitation.Accepted = true;
+            await _dbContext.SaveChangesAsync();
+
             return Ok();
         }
         
@@ -86,15 +86,15 @@ namespace RisikoOnline.Controllers
                 .Where(i => i.Id == id)
                 .FirstOrDefaultAsync();
 
-            if (invitation == null) return NotFound();
-            if (invitation.Accepted == true) return UnprocessableEntity("Invitation already accepted");
-
-            if (invitation.Accepted == null)
-            {
-                invitation.Accepted = false;
-                await _dbContext.SaveChangesAsync();
-            }
+            if (invitation == null)
+                return NotFound(new ApiError(ApiErrorType.EntityNotFound));
             
+            if (invitation.Accepted.HasValue)
+                return UnprocessableEntity(new ApiError(ApiErrorType.InvitationAlreadyAnswered));
+
+            invitation.Accepted = false;
+            await _dbContext.SaveChangesAsync();
+
             return Ok();
         }
 
@@ -114,18 +114,18 @@ namespace RisikoOnline.Controllers
         public async Task<ActionResult<InvitationResponse>> PostInvitation([FromBody] PostInvitationRequest request)
         {
             if (request.Receiver == User.Identity?.Name)
-                return UnprocessableEntity("You can't send an invitation to yourself");
+                return UnprocessableEntity(new ApiError(ApiErrorType.SelfInvitation));
             
             Player receiver = await _dbContext.Players
                 .Where(p => p.Name == request.Receiver)
                 .Include(p => p.IncomingInvitations)
                 .FirstOrDefaultAsync();
             
-            if (receiver == null) return NotFound();
+            if (receiver == null) return NotFound(new ApiError(ApiErrorType.EntityNotFound));
             
             if (!receiver.IncomingInvitations.TrueForAll(
                 i => i.SenderName != User.Identity?.Name || i.Accepted == false))
-                return Conflict();
+                return Conflict(new ApiError(ApiErrorType.InvitationReceiverConflict));
 
             var invitation = new Invitation
             {
