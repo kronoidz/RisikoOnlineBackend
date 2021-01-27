@@ -26,6 +26,26 @@ namespace RisikoOnline.Controllers
         public class MatchResponse
         {
             public int Id { get; set; }
+            public IEnumerable<string> Players { get; set; }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult<List<MatchResponse>>> GetMatches()
+        {
+            string myName = User.Identity?.Name;
+            var myMatches = await _dbContext.PlayerStates
+                .Where(ps => ps.PlayerName == myName)
+                .Select(ps => new MatchResponse
+                {
+                    Id = ps.MatchId,
+                    Players = ps.Match.PlayerStates
+                        .Select(ps2 => ps2.PlayerName)
+                        .AsEnumerable()
+                })
+                .ToListAsync();
+
+            return Ok(myMatches);
         }
         
         [HttpPost]
@@ -55,8 +75,14 @@ namespace RisikoOnline.Controllers
             _dbContext.RemoveRange(invitations);
 
             await _dbContext.SaveChangesAsync();
+            
+            await _dbContext.Entry(match).Navigation("PlayerStates").LoadAsync();
 
-            return Ok(new MatchResponse { Id = match.Id });
+            return Ok(new MatchResponse
+            {
+                Id = match.Id,
+                Players = match.PlayerStates.Select(ps => ps.PlayerName).ToList()
+            });
         }
     }
 }

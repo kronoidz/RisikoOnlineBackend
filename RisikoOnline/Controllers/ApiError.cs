@@ -25,7 +25,8 @@ namespace RisikoOnline.Controllers
             {ApiErrorType.InvitationReceiverConflict, "An invitation to that player is pending or accepted"},
             {ApiErrorType.NotEnoughInvitations, "Not enough accepted invitations to create a match"}
         };
-        
+
+        public bool IsApiError => true;
         public ApiErrorType Type { get; set; }
         public string Description => Descriptions[Type];
         public string Details { get; set; }

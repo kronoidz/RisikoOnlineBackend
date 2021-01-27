@@ -9,6 +9,7 @@ namespace RisikoOnline.Data
 
         public DbSet<Player> Players { get; set; }
         public DbSet<Match> Matches { get; set; }
+        public DbSet<PlayerState> PlayerStates { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
