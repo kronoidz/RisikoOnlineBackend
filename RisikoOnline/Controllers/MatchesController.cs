@@ -11,13 +11,13 @@ using RisikoOnline.Services;
 namespace RisikoOnline.Controllers
 {
     [ApiController]
-    [Route("api/match")]
-    public class MatchController : ControllerBase
+    [Route("api/matches")]
+    public class MatchesController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
         private readonly MatchService _matchService;
 
-        public MatchController(AppDbContext dbContext, MatchService matchService)
+        public MatchesController(AppDbContext dbContext, MatchService matchService)
         {
             _dbContext = dbContext;
             _matchService = matchService;
@@ -27,6 +27,9 @@ namespace RisikoOnline.Controllers
         {
             public int Id { get; set; }
             public IEnumerable<string> Players { get; set; }
+            
+            // null when player states are initializing
+            public string CurrentPlayer { get; set; }
         }
 
         [HttpGet]
@@ -41,11 +44,35 @@ namespace RisikoOnline.Controllers
                     Id = ps.MatchId,
                     Players = ps.Match.PlayerStates
                         .Select(ps2 => ps2.PlayerName)
-                        .AsEnumerable()
+                        .AsEnumerable(),
+                    CurrentPlayer = ps.Match.CurrentPlayerName
                 })
                 .ToListAsync();
 
             return Ok(myMatches);
+        }
+
+        [HttpGet("{id:int}")]
+        [Authorize]
+        public async Task<ActionResult<MatchResponse>> GetMatch(int id)
+        {
+            string myName = User.Identity?.Name;
+            var match = await _dbContext.PlayerStates
+                .Where(ps => ps.PlayerName == myName && ps.MatchId == id)
+                .Select(ps => new MatchResponse
+                {
+                    Id = ps.MatchId,
+                    Players = ps.Match.PlayerStates
+                        .Select(ps2 => ps2.PlayerName)
+                        .AsEnumerable(),
+                    CurrentPlayer = ps.PlayerName
+                })
+                .FirstOrDefaultAsync();
+
+            if (match == null)
+                return NotFound(new ApiError(ApiErrorType.EntityNotFound));
+
+            return match;
         }
         
         [HttpPost]
@@ -81,7 +108,10 @@ namespace RisikoOnline.Controllers
             return Ok(new MatchResponse
             {
                 Id = match.Id,
-                Players = match.PlayerStates.Select(ps => ps.PlayerName).ToList()
+                Players = match.PlayerStates
+                    .Select(ps => ps.PlayerName)
+                    .AsEnumerable(),
+                CurrentPlayer = match.CurrentPlayerName
             });
         }
     }

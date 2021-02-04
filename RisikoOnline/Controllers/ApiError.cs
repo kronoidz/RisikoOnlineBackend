@@ -11,6 +11,8 @@ namespace RisikoOnline.Controllers
         SelfInvitation,
         InvitationReceiverConflict,
         NotEnoughInvitations,
+        MatchAlreadyInitialized,
+        InvalidMatchInitializationData,
     }
     
     public class ApiError
@@ -23,7 +25,9 @@ namespace RisikoOnline.Controllers
             {ApiErrorType.InvitationAlreadyAnswered, "The invitation has already been accepted or declined"},
             {ApiErrorType.SelfInvitation, "Attempting to send and invitation to yourself, which is not allowed"},
             {ApiErrorType.InvitationReceiverConflict, "An invitation to that player is pending or accepted"},
-            {ApiErrorType.NotEnoughInvitations, "Not enough accepted invitations to create a match"}
+            {ApiErrorType.NotEnoughInvitations, "Not enough accepted invitations to create a match"},
+            {ApiErrorType.MatchAlreadyInitialized, "Player state in this match was already initialized"},
+            {ApiErrorType.InvalidMatchInitializationData, "The provided initialization data object is invalid"}
         };
 
         public bool IsApiError => true;
