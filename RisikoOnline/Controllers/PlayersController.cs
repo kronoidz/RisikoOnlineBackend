@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using RisikoOnline.Api;
 using RisikoOnline.Data;
 using RisikoOnline.Services;
 
@@ -31,17 +32,6 @@ namespace RisikoOnline.Controllers
             _configuration = configuration;
         }
 
-        public class PlayerPostRequest
-        {
-            [Required] public string Name { get; set; }
-            [Required] public string Password { get; set; }
-        }
-
-        public class PlayerAuthResponse
-        {
-            public string Token { get; set; }
-        }
-
         private string GetPasswordHash(string password, string salt)
         {
             var sha = new SHA256Managed();
@@ -51,7 +41,7 @@ namespace RisikoOnline.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> PostPlayer([FromBody] PlayerPostRequest request)
+        public async Task<ActionResult> PostPlayer([FromBody] Credentials request)
         {
             if (await _dbContext.Players.FindAsync(request.Name) != null)
                 return Conflict(new ApiError(ApiErrorType.PlayerNameConflict));
@@ -74,7 +64,7 @@ namespace RisikoOnline.Controllers
         }
 
         [HttpPost("auth")]
-        public async Task<ActionResult<PlayerAuthResponse>> Authenticate([FromBody] PlayerPostRequest request)
+        public async Task<ActionResult<PlayerAuthResponse>> Authenticate([FromBody] Credentials request)
         {
             Player player = await _dbContext.Players.FindAsync(request.Name);
             if (player == null)

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RisikoOnline.Data;
+using RisikoOnline.Api;
 
 namespace RisikoOnline.Controllers
 {
@@ -22,41 +23,20 @@ namespace RisikoOnline.Controllers
             _dbContext = dbContext;
         }
 
-        public class InvitationResponse
-        {
-            public int Id { get; set; }
-            public string Sender { get; set; }
-            public string Receiver { get; set; }
-            public bool? Accepted { get; set; }
-
-            public InvitationResponse(Invitation invitation)
-            {
-                Id = invitation.Id;
-                Sender = invitation.SenderName;
-                Receiver = invitation.ReceiverName;
-                Accepted = invitation.Accepted;
-            }
-        }
-
-        public class PostInvitationRequest
-        {
-            [Required] public string Receiver { get; set; }
-        }
-
         [HttpGet("incoming")]
         [Authorize]
-        public async Task<ActionResult<List<InvitationResponse>>> GetIncomingInvitations()
+        public async Task<ActionResult<List<InvitationDto>>> GetIncomingInvitations()
         {
             return await _dbContext.Players
                 .Where(p => p.Name == User.Identity.Name)
                 .SelectMany(p => p.IncomingInvitations)
-                .Select(i => new InvitationResponse(i))
+                .Select(i => new InvitationDto(i))
                 .ToListAsync();
         }
 
         [HttpGet("incoming/{id}/accept")]
         [Authorize]
-        public async Task<ActionResult<InvitationResponse>> AcceptInvitation(int id)
+        public async Task<ActionResult<InvitationDto>> AcceptInvitation(int id)
         {
             Invitation invitation = await _dbContext.Players
                 .Where(p => p.Name == User.Identity.Name)
@@ -78,7 +58,7 @@ namespace RisikoOnline.Controllers
         
         [HttpGet("incoming/{id}/decline")]
         [Authorize]
-        public async Task<ActionResult<InvitationResponse>> DeclineInvitation(int id)
+        public async Task<ActionResult<InvitationDto>> DeclineInvitation(int id)
         {
             Invitation invitation = await _dbContext.Players
                 .Where(p => p.Name == User.Identity.Name)
@@ -100,18 +80,18 @@ namespace RisikoOnline.Controllers
 
         [HttpGet("outgoing")]
         [Authorize]
-        public async Task<ActionResult<List<InvitationResponse>>> GetOutgoingInvitations()
+        public async Task<ActionResult<List<InvitationDto>>> GetOutgoingInvitations()
         {
             return await _dbContext.Players
                 .Where(p => p.Name == User.Identity.Name)
                 .SelectMany(p => p.OutgoingInvitations)
-                .Select(i => new InvitationResponse(i))
+                .Select(i => new InvitationDto(i))
                 .ToListAsync();
         }
 
         [HttpPost("outgoing")]
         [Authorize]
-        public async Task<ActionResult<InvitationResponse>> PostInvitation([FromBody] PostInvitationRequest request)
+        public async Task<ActionResult<InvitationDto>> PostInvitation([FromBody] PostInvitationRequest request)
         {
             if (request.Receiver == User.Identity?.Name)
                 return UnprocessableEntity(new ApiError(ApiErrorType.SelfInvitation));
@@ -135,7 +115,7 @@ namespace RisikoOnline.Controllers
             _dbContext.Add(invitation);
             await _dbContext.SaveChangesAsync();
 
-            return new InvitationResponse(invitation);
+            return new InvitationDto(invitation);
         }
     }
 }

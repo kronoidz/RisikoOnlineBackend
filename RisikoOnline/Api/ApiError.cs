@@ -12,6 +12,7 @@ namespace RisikoOnline.Controllers
         InvitationReceiverConflict,
         NotEnoughInvitations,
         MatchAlreadyInitialized,
+        MatchNotInitialized,
         InvalidMatchInitializationData,
     }
     
@@ -27,7 +28,8 @@ namespace RisikoOnline.Controllers
             {ApiErrorType.InvitationReceiverConflict, "An invitation to that player is pending or accepted"},
             {ApiErrorType.NotEnoughInvitations, "Not enough accepted invitations to create a match"},
             {ApiErrorType.MatchAlreadyInitialized, "Player state in this match was already initialized"},
-            {ApiErrorType.InvalidMatchInitializationData, "The provided initialization data object is invalid"}
+            {ApiErrorType.MatchNotInitialized, "The match has not yet been initialized"},
+            {ApiErrorType.InvalidMatchInitializationData, "The provided initialization data object is invalid"},
         };
 
         public bool IsApiError => true;

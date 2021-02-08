@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RisikoOnline.Data;
+using RisikoOnline.Api;
 using RisikoOnline.Services;
 
 namespace RisikoOnline.Controllers
@@ -23,50 +24,31 @@ namespace RisikoOnline.Controllers
             _matchService = matchService;
         }
 
-        public class MatchResponse
-        {
-            public int Id { get; set; }
-            public IEnumerable<string> Players { get; set; }
-            
-            // null when player states are initializing
-            public string CurrentPlayer { get; set; }
-        }
-
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<List<MatchResponse>>> GetMatches()
+        public async Task<ActionResult<List<MatchDto>>> GetMatches()
         {
             string myName = User.Identity?.Name;
-            var myMatches = await _dbContext.PlayerStates
-                .Where(ps => ps.PlayerName == myName)
-                .Select(ps => new MatchResponse
-                {
-                    Id = ps.MatchId,
-                    Players = ps.Match.PlayerStates
-                        .Select(ps2 => ps2.PlayerName)
-                        .AsEnumerable(),
-                    CurrentPlayer = ps.Match.CurrentPlayerName
-                })
+            
+            var myMatches = await _dbContext.Matches
+                .Where(m => m.PlayerStates.Any(ps => ps.PlayerName == myName))
+                .Include(m => m.PlayerStates)
                 .ToListAsync();
 
-            return Ok(myMatches);
+            return Ok(myMatches.Select(m => new MatchDto(m)).ToList());
         }
 
         [HttpGet("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<MatchResponse>> GetMatch(int id)
+        public async Task<ActionResult<MatchDto>> GetMatch(int id)
         {
             string myName = User.Identity?.Name;
+            
             var match = await _dbContext.PlayerStates
                 .Where(ps => ps.PlayerName == myName && ps.MatchId == id)
-                .Select(ps => new MatchResponse
-                {
-                    Id = ps.MatchId,
-                    Players = ps.Match.PlayerStates
-                        .Select(ps2 => ps2.PlayerName)
-                        .AsEnumerable(),
-                    CurrentPlayer = ps.PlayerName
-                })
+                .Include(ps => ps.Match)
+                .ThenInclude(m => m.PlayerStates)
+                .Select(ps => new MatchDto(ps.Match))
                 .FirstOrDefaultAsync();
 
             if (match == null)
@@ -77,7 +59,7 @@ namespace RisikoOnline.Controllers
         
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<MatchResponse>> CreateMatch()
+        public async Task<ActionResult<MatchDto>> CreateMatch()
         {
             string myName = User.Identity?.Name;
             
@@ -105,14 +87,33 @@ namespace RisikoOnline.Controllers
             
             await _dbContext.Entry(match).Navigation("PlayerStates").LoadAsync();
 
-            return Ok(new MatchResponse
-            {
-                Id = match.Id,
-                Players = match.PlayerStates
-                    .Select(ps => ps.PlayerName)
-                    .AsEnumerable(),
-                CurrentPlayer = match.CurrentPlayerName
-            });
+            return Ok(new MatchDto(match));
+        }
+        
+        [HttpGet("{id:int}/ownerships")]
+        [Authorize]
+        public async Task<ActionResult<List<Api.TerritoryOwnershipDto>>> GetOwnerships(int id)
+        {
+            string myName = User.Identity?.Name;
+            
+            // Get match
+            var match = await _dbContext.PlayerStates
+                .Where(ps => ps.PlayerName == myName && ps.MatchId == id)
+                .Select(ps => ps.Match)
+                .FirstOrDefaultAsync();
+
+            if (match == null)
+                return NotFound(new ApiError(ApiErrorType.EntityNotFound));
+
+            // Requires that the match is fully initialized
+            if (string.IsNullOrEmpty(match.CurrentPlayerName))
+                return BadRequest(new ApiError(ApiErrorType.MatchNotInitialized));
+            
+            await _dbContext.Entry(match).Collection(m => m.Ownerships).LoadAsync();
+
+            return match.Ownerships
+                .Select(o => new Api.TerritoryOwnershipDto(o))
+                .ToList();
         }
     }
 }

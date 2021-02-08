@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RisikoOnline.Data;
+using RisikoOnline.Api;
 
 namespace RisikoOnline.Controllers
 {
@@ -19,37 +20,15 @@ namespace RisikoOnline.Controllers
             _dbContext = dbContext;
         }
 
-        public class PlayerStateResponse
-        {
-            public int Match { get; set; }
-            public string Player { get; set; }
-
-            public bool IsInitialized { get; set; }
-            
-            public MissionObjective MissionObjective { get; set; }
-            public string TargetPlayer { get; set; }
-
-            public int ReinforcementPoints { get; set; }
-            public int UnplacedArmies { get; set; }
-        }
-
+        // Get my player state (without ownerships)
         [HttpGet("{matchId:int}")]
         [Authorize]
-        public async Task<ActionResult<PlayerStateResponse>> GetPlayerState(int matchId)
+        public async Task<ActionResult<PlayerStateDto>> GetPlayerState(int matchId)
         {
             string myName = User.Identity?.Name;
             var playerState = await _dbContext.PlayerStates
                 .Where(ps => ps.MatchId == matchId && ps.PlayerName == myName)
-                .Select(ps => new PlayerStateResponse
-                {
-                    Match = ps.MatchId,
-                    Player = ps.PlayerName,
-                    IsInitialized = ps.IsInitialized,
-                    MissionObjective = ps.MissionObjective,
-                    TargetPlayer = ps.TargetPlayerName,
-                    ReinforcementPoints = ps.ReinforcementPoints,
-                    UnplacedArmies = ps.UnplacedArmies
-                })
+                .Select(ps => new PlayerStateDto(ps))
                 .FirstOrDefaultAsync();
 
             if (playerState == null)
@@ -58,41 +37,32 @@ namespace RisikoOnline.Controllers
             return playerState;
         }
 
-        // Server -> client (territories)
-        public class InitializationData
-        {
-            // Territories initially assigned to the player randomly
-            public IEnumerable<Territory> Territories { get; set; }
-        }
-
-        public class OwnershipDto
-        {
-            public Territory Territory { get; set; }
-            public int Armies { get; set; }
-        }
-
+        // Get my ownerships in this match
         [HttpGet("{matchId:int}/ownerships")]
         [Authorize]
-        public async Task<ActionResult<List<OwnershipDto>>> GetOwnedTerritories(int matchId)
+        public async Task<ActionResult<List<TerritoryOwnershipDto>>> GetMyOwnerships(int matchId)
         {
             string myName = User.Identity?.Name;
 
-            return await _dbContext.PlayerStates
+            var playerState = await _dbContext.PlayerStates
                 .Where(ps => ps.MatchId == matchId && ps.PlayerName == myName)
-                .SelectMany(ps => ps.Ownerships)
-                .Select(o => new OwnershipDto
-                {
-                    Territory = o.Territory,
-                    Armies = o.Armies,
-                })
-                .ToListAsync();
+                .Include(ps => ps.Ownerships)
+                .FirstOrDefaultAsync();
+
+            if (playerState == null)
+                return NotFound(new ApiError(ApiErrorType.EntityNotFound, nameof(PlayerState)));
+
+            return playerState.Ownerships
+                .Select(o => new TerritoryOwnershipDto(o))
+                .ToList();
         }
-        
-        [HttpPost("{matchId:int}/init")]
+
+        // Initialize ownerships at the beginning of a match
+        [HttpPost("{matchId:int}/ownerships")]
         [Authorize]
         public async Task<ActionResult> Initialize (
             int matchId,
-            [FromBody] List<OwnershipDto> ownerships)
+            [FromBody] List<TerritoryOwnershipDto> ownerships)
         {
             string myName = User.Identity?.Name;
 
@@ -101,13 +71,17 @@ namespace RisikoOnline.Controllers
                 .Include(ps => ps.Ownerships)
                 .FirstOrDefaultAsync();
             
-            if (playerState.IsInitialized)
-            {
-                return UnprocessableEntity(new ApiError(ApiErrorType.MatchAlreadyInitialized));
-            }
+            if (playerState == null)
+                return NotFound(new ApiError(ApiErrorType.EntityNotFound));
             
+            if (playerState.IsInitialized)
+                return UnprocessableEntity(new ApiError(ApiErrorType.MatchAlreadyInitialized));
+
             // Validate provided army configuration
             bool valid =
+                
+                // All ownerships are relative to me and this match
+                ownerships.All(o => o.Player == myName && o.Match == playerState.MatchId) ||
                 
                 // All territories have at least 1 army
                 ownerships.All(o => o.Armies >= 1) &&
@@ -128,10 +102,8 @@ namespace RisikoOnline.Controllers
                     );
 
             if (!valid)
-            {
                 return BadRequest(new ApiError(ApiErrorType.InvalidMatchInitializationData));
-            }
-            
+
             // Do initialization
 
             foreach (var ownership in playerState.Ownerships)
