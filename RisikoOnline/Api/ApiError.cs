@@ -13,7 +13,7 @@ namespace RisikoOnline.Controllers
         NotEnoughInvitations,
         MatchAlreadyInitialized,
         MatchNotInitialized,
-        InvalidMatchInitializationData,
+        InvalidOwnerships,
     }
     
     public class ApiError
@@ -29,7 +29,7 @@ namespace RisikoOnline.Controllers
             {ApiErrorType.NotEnoughInvitations, "Not enough accepted invitations to create a match"},
             {ApiErrorType.MatchAlreadyInitialized, "Player state in this match was already initialized"},
             {ApiErrorType.MatchNotInitialized, "The match has not yet been initialized"},
-            {ApiErrorType.InvalidMatchInitializationData, "The provided initialization data object is invalid"},
+            {ApiErrorType.InvalidOwnerships, "The provided ownership array is invalid"},
         };
 
         public bool IsApiError => true;

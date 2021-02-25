@@ -57,7 +57,7 @@ namespace RisikoOnline.Controllers
                 .ToList();
         }
 
-        // Initialize ownerships at the beginning of a match
+        // Submit ownerships
         [HttpPost("{matchId:int}/ownerships")]
         [Authorize]
         public async Task<ActionResult> Initialize (
@@ -66,16 +66,22 @@ namespace RisikoOnline.Controllers
         {
             string myName = User.Identity?.Name;
 
-            var playerState = await _dbContext.PlayerStates
-                .Where(ps => ps.MatchId == matchId && ps.PlayerName == myName)
-                .Include(ps => ps.Ownerships)
-                .FirstOrDefaultAsync();
+            var playerStates = await _dbContext.PlayerStates
+                .Where(ps => ps.MatchId == matchId)
+                .ToListAsync();
+
+            var playerState = playerStates
+                .FirstOrDefault(ps => ps.PlayerName == myName);
             
             if (playerState == null)
                 return NotFound(new ApiError(ApiErrorType.EntityNotFound));
-            
+
             if (playerState.IsInitialized)
                 return UnprocessableEntity(new ApiError(ApiErrorType.MatchAlreadyInitialized));
+            
+            await _dbContext.Entry(playerState)
+                .Collection(ps => ps.Ownerships)
+                .LoadAsync();
 
             // Validate provided army configuration
             bool valid =
@@ -86,25 +92,28 @@ namespace RisikoOnline.Controllers
                 // All territories have at least 1 army
                 ownerships.All(o => o.Armies >= 1) &&
                 
-                // The sum of all armies is the one assigned at match creation
+                // The sum of all armies is correct
                 ownerships.Sum(o => o.Armies) == playerState.UnplacedArmies &&
                 
                 // The number of submitted ownerships is correct
                 ownerships.Count == playerState.Ownerships.Count &&
                 
-                // Exactly one ownership has been submitted for all territories initially
-                // assigned to the player
+                // Exactly one ownership has been submitted for all territories
+                // owned by the player AND
+                // the number of armies has INCREMENTED
                 playerState.Ownerships
                     .TrueForAll(
-                    playerOwnership => ownerships
-                        .Count(submittedOwnership =>
-                            submittedOwnership.Territory == playerOwnership.Territory) == 1
-                    );
+                    playerOwnership =>
+                    {
+                        var o = ownerships
+                            .Where(submittedOwnership =>
+                                submittedOwnership.Territory == playerOwnership.Territory)
+                            .ToList();
+                        return o.Count == 1 && o.First().Armies >= playerOwnership.Armies;
+                    });
 
             if (!valid)
-                return BadRequest(new ApiError(ApiErrorType.InvalidMatchInitializationData));
-
-            // Do initialization
+                return BadRequest(new ApiError(ApiErrorType.InvalidOwnerships));
 
             foreach (var ownership in playerState.Ownerships)
             {
@@ -116,6 +125,13 @@ namespace RisikoOnline.Controllers
 
             playerState.UnplacedArmies = 0;
             playerState.IsInitialized = true;
+            
+            // Check if all player states are initialized
+            if (playerStates.TrueForAll(ps => ps.IsInitialized))
+            {
+                var match = await _dbContext.Matches.FindAsync(matchId);
+                match.CurrentPlayerName = playerStates.First().PlayerName;
+            }
 
             await _dbContext.SaveChangesAsync();
             return Ok();
