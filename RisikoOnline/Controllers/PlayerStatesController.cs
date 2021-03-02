@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RisikoOnline.Data;
 using RisikoOnline.Api;
+using RisikoOnline.Services;
 
 namespace RisikoOnline.Controllers
 {
@@ -14,10 +15,12 @@ namespace RisikoOnline.Controllers
     public class PlayerStatesController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
+        private readonly TurnService _turnService;
 
-        public PlayerStatesController(AppDbContext dbContext)
+        public PlayerStatesController(AppDbContext dbContext, TurnService turnService)
         {
             _dbContext = dbContext;
+            _turnService = turnService;
         }
 
         // Get my player state (without ownerships)
@@ -60,7 +63,7 @@ namespace RisikoOnline.Controllers
         // Submit ownerships
         [HttpPost("{matchId:int}/ownerships")]
         [Authorize]
-        public async Task<ActionResult> Initialize (
+        public async Task<ActionResult> SubmitOwnerships (
             int matchId,
             [FromBody] List<TerritoryOwnershipDto> ownerships)
         {
@@ -70,52 +73,24 @@ namespace RisikoOnline.Controllers
                 .Where(ps => ps.MatchId == matchId)
                 .ToListAsync();
 
-            var playerState = playerStates
+            var myPlayerState = playerStates
                 .FirstOrDefault(ps => ps.PlayerName == myName);
-            
-            if (playerState == null)
+
+            if (myPlayerState == null)
                 return NotFound(new ApiError(ApiErrorType.EntityNotFound));
 
-            if (playerState.IsInitialized)
-                return UnprocessableEntity(new ApiError(ApiErrorType.MatchAlreadyInitialized));
-            
-            await _dbContext.Entry(playerState)
+            await _dbContext.Entry(myPlayerState)
                 .Collection(ps => ps.Ownerships)
                 .LoadAsync();
 
-            // Validate provided army configuration
-            bool valid =
-                
-                // All ownerships are relative to me and this match
-                ownerships.All(o => o.Player == myName && o.Match == playerState.MatchId) ||
-                
-                // All territories have at least 1 army
-                ownerships.All(o => o.Armies >= 1) &&
-                
-                // The sum of all armies is correct
-                ownerships.Sum(o => o.Armies) == playerState.UnplacedArmies &&
-                
-                // The number of submitted ownerships is correct
-                ownerships.Count == playerState.Ownerships.Count &&
-                
-                // Exactly one ownership has been submitted for all territories
-                // owned by the player AND
-                // the number of armies has INCREMENTED
-                playerState.Ownerships
-                    .TrueForAll(
-                    playerOwnership =>
-                    {
-                        var o = ownerships
-                            .Where(submittedOwnership =>
-                                submittedOwnership.Territory == playerOwnership.Territory)
-                            .ToList();
-                        return o.Count == 1 && o.First().Armies >= playerOwnership.Armies;
-                    });
+            // TODO validation
+            // if (!_turnService.ValidateReinforcement(myPlayerState.Ownerships, ownerships,
+                // matchId, myPlayerState.UnplacedArmies))
+                // return BadRequest(new ApiError(ApiErrorType.InvalidOwnerships));
 
-            if (!valid)
-                return BadRequest(new ApiError(ApiErrorType.InvalidOwnerships));
-
-            foreach (var ownership in playerState.Ownerships)
+            // VALIDATION SUCCESSFUL
+            
+            foreach (var ownership in myPlayerState.Ownerships)
             {
                 // ReSharper disable once PossibleNullReferenceException
                 ownership.Armies = ownerships
@@ -123,14 +98,22 @@ namespace RisikoOnline.Controllers
                     .Armies;
             }
 
-            playerState.UnplacedArmies = 0;
-            playerState.IsInitialized = true;
+            myPlayerState.UnplacedArmies = 0;
+            myPlayerState.IsInitialized = true;
             
             // Check if all player states are initialized
-            if (playerStates.TrueForAll(ps => ps.IsInitialized))
+            var match = await _dbContext.Matches.FindAsync(matchId);
+            if (match.CurrentPlayerName == null &&
+                playerStates.TrueForAll(ps => ps.IsInitialized))
             {
-                var match = await _dbContext.Matches.FindAsync(matchId);
-                match.CurrentPlayerName = playerStates.First().PlayerName;
+                var firstPlayer = playerStates.First();
+                await _dbContext.Entry(firstPlayer)
+                    .Collection(ps => ps.Ownerships)
+                    .LoadAsync();
+                
+                // Initialize first turn
+                match.CurrentPlayerName = firstPlayer.PlayerName;
+                firstPlayer.UnplacedArmies = _turnService.GetAssignedArmies(firstPlayer.Ownerships);
             }
 
             await _dbContext.SaveChangesAsync();

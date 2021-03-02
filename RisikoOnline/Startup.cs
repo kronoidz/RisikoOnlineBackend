@@ -42,6 +42,7 @@ namespace RisikoOnline
             services.AddSingleton<ConfigurationService>();
             services.AddSingleton<RandomService>();
             services.AddScoped<MatchService>();
+            services.AddScoped<TurnService>();
             
             // JWT authentication
             string secret = _configuration["TokenSigningSecret"];

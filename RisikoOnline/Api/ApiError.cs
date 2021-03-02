@@ -14,6 +14,7 @@ namespace RisikoOnline.Controllers
         MatchAlreadyInitialized,
         MatchNotInitialized,
         InvalidOwnerships,
+        PlayerStatesNotInitialized,
     }
     
     public class ApiError
@@ -30,6 +31,7 @@ namespace RisikoOnline.Controllers
             {ApiErrorType.MatchAlreadyInitialized, "Player state in this match was already initialized"},
             {ApiErrorType.MatchNotInitialized, "The match has not yet been initialized"},
             {ApiErrorType.InvalidOwnerships, "The provided ownership array is invalid"},
+            {ApiErrorType.PlayerStatesNotInitialized, "Not all player states are initialized"},
         };
 
         public bool IsApiError => true;
