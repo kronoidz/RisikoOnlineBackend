@@ -45,7 +45,8 @@ namespace RisikoOnline.Services
                 state.MissionObjective = await _random.Choose(Enum.GetValues<MissionObjective>());
                 if (state.MissionObjective == MissionObjective.DestroyEnemy)
                 {
-                    state.TargetPlayerName = await _random.Choose(playerTargets);
+                    var targets = playerTargets.Where(t => t != player.Name).ToList();
+                    state.TargetPlayerName = await _random.Choose(targets);
                     playerTargets.Remove(state.TargetPlayerName);
                 }
                 
